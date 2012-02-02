@@ -39,7 +39,7 @@ Settings.prototype = {
     var data = event.data;
     if (typeof data !== 'string')
       return;
-    
+
     data = event.data.split(':');
     if (data.length < 4 || data[0] != 'settings')
       return;
@@ -159,6 +159,9 @@ Settings.prototype = {
           value: true
         }, {
           id: 'keyboard.vibration',
+          value: true
+        }, {
+          id: 'keyboard.clicksound',
           value: true
         }, {
           id: 'airplanemode.enabled',
