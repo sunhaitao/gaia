@@ -261,15 +261,50 @@ const IMEManager = {
     delete this._currentMenuKey;
   },
 
-  // data URL for keyboard click sound
-  kAudio: 'data:audio/x-wav;base64,UklGRiADAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YfwCAAAW/Fzsqe9OAONWB0Pt3Mf1hsS38mJcc0mq9mzpwsIwsChOBxay/ikHV6Tr8ioJNQa0ErvFzbXrw97j5C2LQII7aBg77Tr+I+wH0QWp/7xowHegIf0yD1UkhzRRIbUGoeOgJptCHVB+WZg5ehgsEcofKwKaAb7+cuzd9doICAx0FZEm+gEq+z//D/yJDtEJx/O73MHkifPK/BoLXwwuBt3p5eBq2h3YT/OR+MH/5xDGB7sHowyp9rrrL++06mnt/PpcALcI7RDSCz4GwwWaAXYNVhLwD20VYQsvCWUPxApJCVUH3P0jA54EIP0RBUYHVgtlD68KtQWI/9MB4f8Q/Fr4UvLz7nPqyOzV9AvzKfEB7azl/+ee6jbrSOw16mjpPepD7d3yT/hL/RIDBAXQAHcDIAZ1BVsPIhAZCT4Ntwc2CJsQnhV+GlYcJR67GF0WaRK5CewGSQdSBboCfgWGBaQACP0e+8f3O/Y4+Yn14e8l9Mf3lvns/eT75fbx9t359/lw+6L+XP+5AdsFSgZECK8LvQlVCWYJ1wetBD8AGALlAJUAVAbPBEkDpALfADn/Cv4c/+7+OP/jAAb/7vie+Xr7GvYa9g30rPBc9OL1wveo+3D+8/xG+Zn5tPsi/vX/xv4I/Oj5DPaL8mbxmfMM+80AXQbiCisNvhC8Dt4LGwwyDJkNlAxRCWYGswcHCn0KyA5cDsQKYgrZB+cFlATlAh4A3P5kAOsAOwLbA+ED8gLAAM/+h/vq+Lb5qPgY+GH5i/nE+SX6V/s9+gv69vl89nv33fhc+Zb6nvse/lEA4wMjBrQEugPc/4/8pvux+//9Kf9tAGcBXAFxAtgCuwMeBFQE6AQdA4gCGAJiADsAuwC7/53+a/4J/tv88fte+R74dPhd+HD5LPmf+If5VPsp/noASALRAbsB+wJ+Ak0CuQPiBAsFpwYTB5wFtgZ/DE4P8AuHB4kD3QKPBcAHhgaHBDAEngO6BBcFbwJ2/qD7rPtG/voBwQGU/pn9Lv3T/g==',
+  // The click sound in Float32Array
+  // in base64 representation
+  // of the binary string
+  // of the Uint8Array
+  // - this is mind-boggling, but it save space compare to literal object!
+  kAudioData: (function km_decodeAudioData() {
+    var base64Data = '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';
+    var binStr = window.atob(base64Data);
+
+    var buffer = new ArrayBuffer(2048);
+    var arr = new Uint8Array(buffer);
+
+    for (var i in binStr) {
+      arr[i] = binStr.charCodeAt(i);
+    }
+
+    return new Float32Array(buffer);
+  })(),
 
   set clicksound(enable) {
     if (!enable && this._audio)
       delete this._audio;
+      delete this.kAudio;
 
     if (enable && !this._audio) {
-      this._audio = new Audio(this.kAudio);
+      this._audio = new Audio();
+      this._audio.mozSetup(1, 22050);
+
+      // convert audio data into Float32Array
+      this._audio1 = new Audio('./keydown1.wav'); // data url won't work here due to 663794
+      setTimeout((function () {
+        this._audio1.mozFrameBufferLength = 512;// 16384; //381
+        this._audio1.addEventListener('MozAudioAvailable',function (ev) {
+          // ev.frameBuffer is a Float32Array
+          var arr = new Uint8Array(ev.frameBuffer.buffer);
+          var str = '';
+
+          for (var i = 0; i < 1530; i++) {
+            str += String.fromCharCode(arr[i]);
+          }
+            alert(window.btoa(str));
+        });
+        this._audio1.play();
+      }).bind(this),500);
     }
   },
 
@@ -286,7 +321,7 @@ const IMEManager = {
     }
 
     if (this.clicksound) {
-      this.clicksound.play();
+      this._audio.mozWriteAudio(this.kAudioData);
     }
   },
 
