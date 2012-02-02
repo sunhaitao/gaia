@@ -288,23 +288,6 @@ const IMEManager = {
     if (enable && !this._audio) {
       this._audio = new Audio();
       this._audio.mozSetup(1, 22050);
-
-      // convert audio data into Float32Array
-      this._audio1 = new Audio('./keydown1.wav'); // data url won't work here due to 663794
-      setTimeout((function () {
-        this._audio1.mozFrameBufferLength = 512;// 16384; //381
-        this._audio1.addEventListener('MozAudioAvailable',function (ev) {
-          // ev.frameBuffer is a Float32Array
-          var arr = new Uint8Array(ev.frameBuffer.buffer);
-          var str = '';
-
-          for (var i = 0; i < 1530; i++) {
-            str += String.fromCharCode(arr[i]);
-          }
-            alert(window.btoa(str));
-        });
-        this._audio1.play();
-      }).bind(this),500);
     }
   },
 
